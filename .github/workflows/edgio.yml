@@ -142,14 +142,15 @@ jobs:
         id: deploy
         run: |
           if [ "${{ steps.package.outputs.package_manager }}" = "npm" ]; then
-            # deploy_command="npm run edgio:deploy"
-            npm run edgio:deploy >> deploy_command
+            deploy_command="npm run edgio:deploy"
           else
             deploy_command="edgio:deploy"
           fi
           echo "$deploy_command"
           # Use "production" environment for master/main branches, otherwise use "default" environment
-          output=$("$deploy_command" -- --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}" 2>&1) || true
+          # output=$("$deploy_command" -- --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}" 2>&1) || true
+          npm run edgio:deploy -- --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"
+          output = "test"
           echo "$output"
           echo "OUTPUT=$output" >> $GITHUB_OUTPUT
         env:
