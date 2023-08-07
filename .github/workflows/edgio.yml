@@ -142,7 +142,8 @@ jobs:
         id: deploy
         run: |
           if [ "${{ steps.package.outputs.package_manager }}" = "npm" ]; then
-            deploy_command="npm run edgio:deploy"
+            # deploy_command="npm run edgio:deploy"
+            npm run edgio:deploy >> deploy_command
           else
             deploy_command="edgio:deploy"
           fi
