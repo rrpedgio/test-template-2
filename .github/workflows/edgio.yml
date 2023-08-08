@@ -146,50 +146,15 @@ jobs:
           else
             deploy_command="yarn edgio:deploy"
           fi
-          echo "$deploy_command"
           
-          eval '"$deploy_command" -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"'
+          '"$deploy_command" -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"'
           ls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Parse Deployment Output
         id: parse
         run: |
-          DEPLOY=$(cat $GITHUB_OUTPUT)
-          # Get the build link from the output of the command
-          echo "$DEPLOY" | sed -n 's/.*\(https:\/\/edgio-dev\.app\/[^ ]*\).*/\1/p' |
-          {
-            read buildlink || buildlink=""
-            if [[ -n $buildlink ]]; then
-              echo "$buildlink=$buildlink" >> $GITHUB_OUTPUT
-            else
-              echo "buildlink=" >> $GITHUB_OUTPUT
-            fi
-          }
-          
-          # Get the permalink link from the output of the command
-          echo "$DEPLOY" | sed -n 's/.*\(https.*-perma\.link\).*/\1/p' |
-          {
-            read permalink || permalink=""
-            if [[ -n $permalink ]]; then
-              echo "permalink=$permalink" >> $GITHUB_OUTPUT
-            else
-              echo "permalink=" >> $GITHUB_OUTPUT
-            fi
-          }
-          
-          # Get the edge link from the output of the command
-          echo "$DEPLOY" | sed -n 's/.*\(https.*\-.edgio-dev\.link\).*/\1/p' |
-          {
-            read edge || edge=""
-            if [[ -n $edge ]]; then
-              echo "edge=$edge" >> $GITHUB_OUTPUT
-              echo "status=✅ Successful!" >> $GITHUB_OUTPUT
-            else
-              echo "edge=" >> $GITHUB_OUTPUT
-              echo "status=❌ See status check" >> $GITHUB_OUTPUT
-            fi
-          }
+          ls
       - uses: jwalton/gh-find-current-pr@v1
         id: finder
       - name: Publish Preview Link
