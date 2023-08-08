@@ -148,12 +148,16 @@ jobs:
           fi
           
            npm run edgio:deploy -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"
-          ls -la
-          cd .edgio
-          ls -la
-          echo "$(cat deployment-manifest.json)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Parse Output
+        id: parse
+        run: | 
+          sudo apt-get install -y jq
+          permalink=$(jq '.url' .edgio/deployment-manifest.json)
+          edge=$(jq '.environment.url' .edgio/deployment-manifest.json)
+          echo "PERMALINK=$permalink" >> $GITHUB_OUTPUT
+          echo "EDGE=$edge" >> $GITHUB_OUTPUT
       - uses: jwalton/gh-find-current-pr@v1
         id: finder
       - name: Publish Preview Link
@@ -162,7 +166,7 @@ jobs:
           number: ${{ steps.finder.outputs.pr }}
           header: preview
           message: |
-            ##### Deployment: ${{ steps.parse.outputs.status }}
+            ##### Deployment:
             - Permalink: ${{ steps.parse.outputs.permalink }}
             - Edge: ${{ steps.parse.outputs.edge }}
         env:
