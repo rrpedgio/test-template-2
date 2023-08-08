@@ -151,7 +151,7 @@ jobs:
           ls -la
           cd .edgio
           ls -la
-          # echo "$(cat edgio.config.js)"
+          echo "$(cat deployment-manifest.json)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: jwalton/gh-find-current-pr@v1
