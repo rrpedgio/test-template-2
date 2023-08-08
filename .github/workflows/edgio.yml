@@ -147,7 +147,16 @@ jobs:
             deploy_command="yarn edgio:deploy"
           fi
           
-           npm run edgio:deploy -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"
+           #$deploy_command -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"
+          deploy_command="$deploy_command --"
+          deploy_command+=" ${GITHUB_EVENT_NAME == 'push' && '--environment=staging' || ''}"
+          deploy_command+=" ${GITHUB_EVENT_NAME == 'pull_request' && '--environment=default' || ''}"
+          deploy_command+=" ${GITHUB_EVENT_NAME == 'release' && '--environment=production' || ''}"
+          deploy_command+=" --token='${{ secrets.EDGIO_DEPLOY_TOKEN }}'"
+          deploy_command+=" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH'"
+          deploy_command+=" --branch='$BRANCH_NAME'"
+          deploy_command+=" --api-url='${{ env.api_url }}'"
+          eval "$deploy_command
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Parse Output
