@@ -134,7 +134,7 @@ jobs:
             echo "Using npm - Global packages:"
           elif [ ${{ steps.package.outputs.package_manager }} = "yarn" ]; then
             yarn global add @edgio/cli@latest
-            yarn install --immutable
+            yarn install --frozen-lockfile
             echo "Using yarn - Global packages:"
           fi
           echo ${{ steps.package.outputs.package_manager }}
@@ -146,9 +146,8 @@ jobs:
           else
             deploy_command="yarn edgio:deploy --"
           fi
-          
-           #$deploy_command -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"
           deploy_command="$deploy_command"
+          
           if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
             deploy_command+=" --environment=staging"
           elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
@@ -156,10 +155,9 @@ jobs:
           elif [[ "$GITHUB_EVENT_NAME" == "release" ]]; then
             deploy_command+=" --environment=production"
           fi
+          
           deploy_command+=" --token='${{ secrets.EDGIO_DEPLOY_TOKEN }}'"
           deploy_command+=" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch='$BRANCH_NAME' --api-url='${{ env.api_url }}'"
-          # deploy_command+=" --branch='$BRANCH_NAME'"
-          # deploy_command+=" --api-url='${{ env.api_url }}'"
           eval "$deploy_command"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
