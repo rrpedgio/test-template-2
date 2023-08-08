@@ -152,11 +152,6 @@ jobs:
           echo "$(cat edgio.config.js)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Parse Deployment Output
-        id: parse
-        uses: actions/exec@v2
-        with:
-          command: jq '.key' input.json >> $GITHUB_OUTPUT
       - uses: jwalton/gh-find-current-pr@v1
         id: finder
       - name: Publish Preview Link
