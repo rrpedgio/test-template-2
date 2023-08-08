@@ -147,7 +147,7 @@ jobs:
             deploy_command="yarn edgio:deploy"
           fi
           
-          '"$deploy_command" -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"'
+           npm run edgio:deploy -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"
           ls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
