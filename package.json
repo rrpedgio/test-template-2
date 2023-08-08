@@ -22,7 +22,7 @@
     "@edgio/devtools": "^7.0.31",
     "@edgio/next": "^7.0.31",
     "@edgio/prefetch": "^7.0.31",
-    "@edgio/react": "^7.0.15",
+    "@edgio/react": "^7.0.31",
     "@heroicons/react": "^1.0.6",
     "autoprefixer": "^10.4.14",
     "classnames": "^2.3.2",
