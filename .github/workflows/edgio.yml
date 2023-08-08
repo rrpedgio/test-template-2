@@ -142,21 +142,25 @@ jobs:
         id: deploy
         run: |
           if [ "${{ steps.package.outputs.package_manager }}" = "npm" ]; then
-            deploy_command="npm run edgio:deploy"
+            deploy_command="npm run edgio:deploy --"
           else
-            deploy_command="yarn edgio:deploy"
+            deploy_command="yarn edgio:deploy --"
           fi
           
            #$deploy_command -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"
-          deploy_command="$deploy_command --"
-          deploy_command+=" ${GITHUB_EVENT_NAME == 'push' && '--environment=staging' || ''}"
-          deploy_command+=" ${GITHUB_EVENT_NAME == 'pull_request' && '--environment=default' || ''}"
-          deploy_command+=" ${GITHUB_EVENT_NAME == 'release' && '--environment=production' || ''}"
+          deploy_command="$deploy_command"
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            deploy_command+=" --environment=staging"
+          elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            deploy_command+=" --environment=default"
+          elif [[ "$GITHUB_EVENT_NAME" == "release" ]]; then
+            deploy_command+=" --environment=production"
+          fi
           deploy_command+=" --token='${{ secrets.EDGIO_DEPLOY_TOKEN }}'"
           deploy_command+=" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH'"
           deploy_command+=" --branch='$BRANCH_NAME'"
           deploy_command+=" --api-url='${{ env.api_url }}'"
-          eval "$deploy_command
+          eval "$deploy_command"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Parse Output
