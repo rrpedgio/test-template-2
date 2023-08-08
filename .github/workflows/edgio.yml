@@ -157,9 +157,9 @@ jobs:
             deploy_command+=" --environment=production"
           fi
           deploy_command+=" --token='${{ secrets.EDGIO_DEPLOY_TOKEN }}'"
-          deploy_command+=" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH'"
-          deploy_command+=" --branch='$BRANCH_NAME'"
-          deploy_command+=" --api-url='${{ env.api_url }}'"
+          deploy_command+=" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch='$BRANCH_NAME' --api-url='${{ env.api_url }}'"
+          # deploy_command+=" --branch='$BRANCH_NAME'"
+          # deploy_command+=" --api-url='${{ env.api_url }}'"
           eval "$deploy_command"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
