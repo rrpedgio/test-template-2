@@ -148,7 +148,7 @@ jobs:
           fi
           
            npm run edgio:deploy -- ${{github.event_name == 'push' && '--environment=staging' || ''}} ${{github.event_name == 'pull_request' && '--environment=default' || ''}} ${{github.event_name == 'release' && '--environment=production' || ''}} --token="${{ secrets.EDGIO_DEPLOY_TOKEN }}" --non-interactive --ignore-error='CONFIG_SOURCE_SWITCH' --branch="$BRANCH_NAME" --api-url="${{ env.api_url }}"
-          ls-la
+          ls -la
           echo "$(cat edgio.config.js)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
