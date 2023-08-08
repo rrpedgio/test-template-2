@@ -154,8 +154,8 @@ jobs:
         id: parse
         run: | 
           sudo apt-get install -y jq
-          permalink=$(jq '.url' .edgio/deployment-manifest.json)
-          edge=$(jq '.environment.url' .edgio/deployment-manifest.json)
+          permalink=$(jq -r '.url' .edgio/deployment-manifest.json)
+          edge=$(jq -r '.environment.url' .edgio/deployment-manifest.json)
           echo "PERMALINK=$permalink" >> $GITHUB_OUTPUT
           echo "EDGE=$edge" >> $GITHUB_OUTPUT
       - uses: jwalton/gh-find-current-pr@v1
@@ -166,7 +166,7 @@ jobs:
           number: ${{ steps.finder.outputs.pr }}
           header: preview
           message: |
-            ##### Deployment:
+            ##### Deployment Links:
             - Permalink: ${{ steps.parse.outputs.permalink }}
             - Edge: ${{ steps.parse.outputs.edge }}
         env:
