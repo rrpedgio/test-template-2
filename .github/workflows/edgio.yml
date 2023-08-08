@@ -52,7 +52,7 @@ jobs:
       - name: Initialize Edgio
         if: env.SUCCESS == 'false'
         run: |
-          edgio init --connector=@edgio/next
+          edgio init --connector=
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Commit & Push changes
